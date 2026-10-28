@@ -59,7 +59,9 @@ export function memoriesDir(root: string, scope: Scope): string {
 
 /** Lowercase words joined by hyphens, short enough to read in a list. */
 export function slugify(text: string): string {
+  // Named after the first sentence only, even when the summary has two.
   const words = text
+    .split(/[.!?](?:\s|$)/)[0]
     .toLowerCase()
     .normalize("NFKD")
     .replace(/\p{M}/gu, "")
@@ -78,7 +80,10 @@ export function slugify(text: string): string {
 /** The first sentence of a fact, cut at a word boundary to fit one line. */
 export function describe(fact: string): string {
   const line = fact.trim().split(/\n/)[0];
-  const sentence = line.match(/^.+?[.!?](?=\s|$)/)?.[0] ?? line;
+  const sentences = line.match(/.+?[.!?](?=\s|$)/g)?.map((s) => s.trim()) ?? [line];
+  let sentence = sentences[0];
+  // A short first sentence says too little on its own; take the next one if both fit.
+  if (sentence.length < 50 && sentences[1] && sentence.length + sentences[1].length < 100) sentence += ` ${sentences[1]}`;
   if (sentence.length <= 100) return sentence;
   const cut = sentence.slice(0, 100);
   return `${cut.slice(0, cut.lastIndexOf(" ") > 40 ? cut.lastIndexOf(" ") : 100)}...`;

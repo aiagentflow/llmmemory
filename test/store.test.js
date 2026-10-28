@@ -22,7 +22,8 @@ test("slugify keeps a short readable name", () => {
 });
 
 test("describe takes the first sentence and cuts long ones at a word", () => {
-  assert.equal(summarize("First thing. Second thing."), "First thing.");
+  assert.equal(summarize("Staging server is heron-7. Deploys run on Thursdays."), "Staging server is heron-7. Deploys run on Thursdays.");
+  assert.equal(summarize(`A first sentence that is long enough to stand on its own. Second.`), "A first sentence that is long enough to stand on its own.");
   const long = summarize("word ".repeat(40));
   assert.ok(long.length <= 104 && long.endsWith("..."));
 });
@@ -61,7 +62,7 @@ test("names cannot escape the store", () => {
 test("hand-written files without frontmatter still load", () => {
   const parsed = parse("Just a note about caching. More detail.", "note");
   assert.equal(parsed.name, "note");
-  assert.equal(parsed.description, "Just a note about caching.");
+  assert.equal(parsed.description, "Just a note about caching. More detail.");
   assert.deepEqual(parse("---\ntags: a, \"b\"\n---\nbody", "x").tags, ["a", "b"]);
 });
 
