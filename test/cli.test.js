@@ -37,8 +37,8 @@ test("init wires both hooks and the MCP server, keeping what was there", () => {
   assert.equal(again.hooks.SessionStart.length, 2);
 
   const status = JSON.parse(cli(["status", "--json"]).stdout);
-  assert.deepEqual(status.hooks, { session: true, prompt: true });
-  assert.equal(status.mcp, true);
+  assert.deepEqual(status.agents.claude, { session: true, prompt: true, mcp: true });
+  assert.deepEqual(status.agents.cursor, { session: false, prompt: null, mcp: false });
 });
 
 test("init refuses to overwrite settings it cannot parse", () => {

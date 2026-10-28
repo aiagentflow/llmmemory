@@ -2,6 +2,7 @@
 import { parseArgs } from "node:util";
 import { add, find, forget, list, show } from "./commands/memories.js";
 import { clean, init, status } from "./commands/setup.js";
+import { AGENTS, agentNamed, claude, parseAgents } from "./agents/index.js";
 import { promptHook, sessionStart } from "./hooks.js";
 import { serve } from "./mcp.js";
 import { findRoot, type Scope } from "./store.js";
@@ -13,7 +14,7 @@ Usage
   llmmemory <command> [options]
 
 Commands
-  init                 Create .llmmemory/ and wire Claude Code's hooks and MCP server
+  init                 Create .llmmemory/ and wire your agents' hooks and MCP server
   add <fact>           Save a memory ("-" reads it from stdin)
   list                 List memories
   search <words>       Find memories by keyword, best match first
@@ -22,8 +23,8 @@ Commands
   status               Show where memories live and what is wired
   clean                Unwire the hooks and MCP server; memories are kept
   mcp                  Run the MCP server on stdio
-  session-start        Internal: SessionStart hook, prints the memory index
-  prompt               Internal: UserPromptSubmit hook, recalls matching memories
+  session-start        Internal: session start hook, prints the memory index
+  prompt               Internal: per-message hook, recalls matching memories
 
 Options
   --global             add, list, show, forget: the store shared by every project
@@ -32,6 +33,9 @@ Options
   --description <text> add: one-line summary (default: the first sentence)
   --tags <a,b>         add: comma-separated tags
   --limit <n>          search: how many results (default 5)
+  --agents <list>      init: agents to wire, comma-separated: claude, codex,
+                       gemini, cursor, antigravity. Default: Claude Code plus
+                       any agent the project already uses
   --no-mcp             init: wire only the hooks
   --json               Machine-readable output
   -h, --help           Show this help
@@ -40,7 +44,7 @@ Options
 
 /** Options each command accepts beyond --json and --help. */
 const ALLOWED: Record<string, string[]> = {
-  init: ["no-mcp"],
+  init: ["no-mcp", "agents"],
   add: ["global", "name", "description", "tags"],
   list: ["global", "project"],
   search: ["limit"],
@@ -73,6 +77,8 @@ async function main(argv: string[]): Promise<number> {
         tags: { type: "string" },
         limit: { type: "string" },
         "no-mcp": { type: "boolean" },
+        agents: { type: "string" },
+        agent: { type: "string" },
         json: { type: "boolean" },
         help: { type: "boolean", short: "h" },
         version: { type: "boolean", short: "v" },
@@ -95,8 +101,10 @@ async function main(argv: string[]): Promise<number> {
   }
 
   // The hooks and the MCP server must never fail on arguments; they find their own root.
-  if (command === "session-start") return sessionStart();
-  if (command === "prompt") return promptHook();
+  // An unknown --agent falls back to Claude Code.
+  const hookAgent = agentNamed(values.agent ?? claude.name) ?? claude;
+  if (command === "session-start") return sessionStart(hookAgent);
+  if (command === "prompt") return promptHook(hookAgent);
   if (command === "mcp") return serve();
 
   const allowed = ALLOWED[command];
@@ -132,8 +140,18 @@ async function main(argv: string[]): Promise<number> {
   const scope: Scope | undefined = values.global ? "global" : values.project ? "project" : undefined;
 
   switch (command) {
-    case "init":
-      return init(root, { json, mcp: !values["no-mcp"] });
+    case "init": {
+      const parsed = values.agents === undefined ? undefined : parseAgents(values.agents);
+      if (parsed && "unknown" in parsed) {
+        process.stderr.write(`Unknown agent: ${parsed.unknown}. Known agents: ${AGENTS.map((a) => a.name).join(", ")}.\n`);
+        return 1;
+      }
+      if (parsed && parsed.agents.length === 0) {
+        process.stderr.write("--agents needs at least one agent.\n");
+        return 1;
+      }
+      return init(root, { json, mcp: !values["no-mcp"], agents: parsed?.agents });
+    }
     case "add": {
       const fact = arg === "-" ? await readStdin() : arg;
       const tags = values.tags?.split(",").map((t) => t.trim()).filter(Boolean);

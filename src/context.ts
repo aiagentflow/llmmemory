@@ -30,8 +30,25 @@ function indexLines(memories: Memory[], budget: number): { lines: string[]; left
   return { lines, left: 0 };
 }
 
+/**
+ * How the agent reaches the full text of a memory. Where its hooks cannot
+ * add memories to a message, it is told to look them up itself.
+ */
+function howToRecall(autoRecall: boolean): string[] {
+  return autoRecall
+    ? [
+        "Read one in full with `llmmemory show <name>` or the recall tool. Memories that match the user's",
+        "message are added to it automatically.",
+      ]
+    : [
+        "Only this index is loaded. Before answering anything that may depend on earlier work (a decision,",
+        "a preference, how this project does something), look up the matching memories with the recall tool",
+        "or `llmmemory search <words>`, and read one in full with `llmmemory show <name>`.",
+      ];
+}
+
 /** What a new session is told: the index of memories and how to add to it. */
-export function sessionContext(memories: Memory[]): string {
+export function sessionContext(memories: Memory[], autoRecall = true): string {
   if (memories.length === 0) {
     return ["llmmemory: no memories saved yet for this project.", HOW_TO_SAVE].join("\n");
   }
@@ -51,12 +68,7 @@ export function sessionContext(memories: Memory[]): string {
     left += index.left;
   }
   if (left > 0) out.push(`(${left} more not listed; find them with \`llmmemory search <words>\`.)`);
-  out.push(
-    "Read one in full with `llmmemory show <name>` or the recall tool. Memories that match the user's",
-    "message are added to it automatically.",
-    HOW_TO_SAVE,
-    NOT_INSTRUCTIONS,
-  );
+  out.push(...howToRecall(autoRecall), HOW_TO_SAVE, NOT_INSTRUCTIONS);
   return out.join("\n");
 }
 
