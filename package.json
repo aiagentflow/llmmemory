@@ -1,7 +1,7 @@
 {
   "name": "llmmemory",
   "version": "0.1.0",
-  "description": "Long-term memory for AI coding agents. Plain Markdown memories, recalled into every session through hooks and an MCP server.",
+  "description": "Long-term memory for AI coding agents. Plain Markdown memories, recalled into every session through hooks and an MCP server. Works with Claude Code, Codex CLI, Gemini CLI, Cursor and Antigravity CLI.",
   "type": "module",
   "bin": {
     "llmmemory": "./dist/index.js"
@@ -12,7 +12,7 @@
     "README.md",
     "LICENSE"
   ],
-  "homepage": "https://github.com/aiagentflow/llmmemory#readme",
+  "homepage": "https://aiagentflow.dev/llmmemory",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aiagentflow/llmmemory.git"
@@ -26,9 +26,14 @@
   },
   "keywords": [
     "memory",
+    "agent-memory",
     "ai-agents",
     "llm",
     "claude-code",
+    "codex",
+    "gemini-cli",
+    "cursor",
+    "antigravity",
     "mcp",
     "context",
     "cli"
