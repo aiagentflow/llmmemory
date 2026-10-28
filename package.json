@@ -12,6 +12,14 @@
     "README.md",
     "LICENSE"
   ],
+  "homepage": "https://github.com/aiagentflow/llmmemory#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiagentflow/llmmemory.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aiagentflow/llmmemory/issues"
+  },
   "license": "MIT",
   "engines": {
     "node": ">=22.0.0"
