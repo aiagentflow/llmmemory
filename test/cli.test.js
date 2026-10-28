@@ -70,7 +70,7 @@ test("add, list, search, show and forget work from a subdirectory", () => {
   const listed = JSON.parse(cli(["list", "--json"], undefined, sub).stdout);
   assert.deepEqual(listed.map((m) => [m.name, m.scope]), [["deploys-run-through-ship-sh", "project"], ["tone", "global"]]);
 
-  assert.match(cli(["search", "deploy"], undefined, sub).stdout, /^deploys-run-through-ship-sh \(project\)/);
+  assert.match(cli(["search", "deploy"], undefined, sub).stdout, /^deploys-run-through-ship-sh  project  \[deploy, ci\]  score [\d.]+\n  Deploys run through ship\.sh\./);
   assert.match(cli(["show", "tone"], undefined, sub).stdout, /Keep answers short\./);
   assert.equal(cli(["forget", "tone", "--project"], undefined, sub).code, 1);
   assert.equal(cli(["forget", "tone"], undefined, sub).code, 0);
