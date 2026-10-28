@@ -1,5 +1,5 @@
 import { search } from "../search.js";
-import { getMemory, listMemories, removeMemory, saveMemory, type Memory, type Scope } from "../store.js";
+import { displayPath, getMemory, listMemories, removeMemory, saveMemory, type Memory, type Scope } from "../store.js";
 
 function out(text: string): number {
   process.stdout.write(`${text}\n`);
@@ -28,7 +28,7 @@ export function add(root: string, fact: string, options: AddOptions): number {
   try {
     const { memory, updated } = saveMemory(root, { fact, ...options });
     if (options.json) return out(JSON.stringify({ ...memory, updated }));
-    return out(`${updated ? "Updated" : "Saved"} ${memory.scope} memory "${memory.name}"\n  ${memory.path}`);
+    return out(`${updated ? "Updated" : "Saved"} ${memory.scope} memory "${memory.name}"\n  ${displayPath(memory.path)}`);
   } catch (error) {
     return fail((error as Error).message);
   }
@@ -52,7 +52,7 @@ export function show(root: string, name: string, options: { json: boolean; scope
   const memory = getMemory(root, name, options.scope);
   if (!memory) return fail(`No memory named "${name}".`);
   if (options.json) return out(JSON.stringify(memory, null, 2));
-  return out(`${line(memory)}\nupdated ${memory.updated.slice(0, 10)}  ${memory.path}\n\n${memory.body}`);
+  return out(`${line(memory)}\nupdated ${memory.updated.slice(0, 10)}  ${displayPath(memory.path)}\n\n${memory.body}`);
 }
 
 export function forget(root: string, name: string, options: { json: boolean; scope?: Scope }): number {

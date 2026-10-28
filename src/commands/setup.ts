@@ -2,7 +2,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { AGENTS, type Agent, type Wiring } from "../agents/index.js";
 import { SettingsError } from "../settings.js";
-import { globalDir, listMemories, memoriesDir, STORE_DIR } from "../store.js";
+import { displayPath, globalDir, listMemories, memoriesDir, STORE_DIR } from "../store.js";
 
 function report(json: boolean, data: object, lines: string[]): number {
   process.stdout.write(json ? `${JSON.stringify(data, null, 2)}\n` : `${lines.join("\n")}\n`);
@@ -56,7 +56,7 @@ export function init(root: string, options: InitOptions): number {
       { store, created, agents: Object.fromEntries(wired.map(({ agent, wiring }) => [agent.name, wiring])), notes },
       [
         `${created ? "Created" : "Found"} ${join(STORE_DIR, "memories")}/ for this project's memories.`,
-        `Global memories live in ${memoriesDir(root, "global")}.`,
+        `Global memories live in ${displayPath(memoriesDir(root, "global"))}/.`,
         "",
         "Wired:",
         ...wired.map(({ agent, wiring }) => describeWiring(agent, wiring)),
@@ -94,8 +94,8 @@ export function status(root: string, options: { json: boolean }): number {
         agents: Object.fromEntries(agents.map(({ agent, wiring }) => [agent.name, wiring])),
       },
       [
-        `Project:  ${root}${initialized ? "" : "  (not initialized: run llmmemory init)"}`,
-        `Memories: ${project} project, ${memories.length - project} global (${globalDir()})`,
+        `Project:  ${displayPath(root) || "."}${initialized ? "" : "  (not initialized: run llmmemory init)"}`,
+        `Memories: ${project} project, ${memories.length - project} global (${displayPath(globalDir())})`,
         "Agents:",
         ...(shown.length > 0 ? shown.map(({ agent, wiring }) => describeWiring(agent, wiring)) : ["  none wired"]),
         ...(notes.length > 0 ? ["", ...notes] : []),

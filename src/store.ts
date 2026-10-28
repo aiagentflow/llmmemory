@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 
 export const STORE_DIR = ".llmmemory";
 const MEMORIES = "memories";
@@ -31,6 +31,14 @@ export interface NewMemory {
 /** The global store, shared by every project. LLMMEMORY_HOME moves it, mainly for tests. */
 export function globalDir(): string {
   return process.env.LLMMEMORY_HOME ?? join(homedir(), STORE_DIR);
+}
+
+/** A path as people read it: relative inside the current directory, ~ inside the home directory. */
+export function displayPath(path: string): string {
+  const here = relative(process.cwd(), path);
+  if (here !== "" && !here.startsWith("..") && !here.startsWith(sep)) return here;
+  const home = homedir();
+  return path === home || path.startsWith(home + sep) ? `~${path.slice(home.length)}` : path;
 }
 
 /** The nearest directory at or above `from` holding a project store, or null. */
