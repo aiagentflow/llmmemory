@@ -22,6 +22,8 @@ export const claude: Agent = {
   label: "Claude Code",
   hooksPath: CONFIG,
   mcpPath: MCP,
+  sessionCommand: SESSION_COMMAND,
+  probe: (root) => ({ session_id: "llmmemory-doctor", cwd: root, hook_event_name: "SessionStart", source: "startup" }),
   // Claude Code is always wired by default, whether or not .claude/ exists yet.
   detect: () => true,
 

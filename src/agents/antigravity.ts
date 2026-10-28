@@ -21,6 +21,8 @@ export const antigravity: Agent = {
   label: "Antigravity CLI",
   hooksPath: CONFIG,
   mcpPath: MCP,
+  sessionCommand: SESSION,
+  probe: (root) => ({ conversationId: "llmmemory-doctor", workspacePaths: [root] }),
   detect: (root) => ["hooks.json", "rules", "workflows", "mcp_config.json"].some((name) => existsSync(join(root, ".agents", name))),
 
   wiring(root) {

@@ -8,8 +8,10 @@ import { str, type Agent } from "./types.js";
 const CONFIG = join(".gemini", "settings.json");
 
 /** BeforeAgent fires once the user submits a prompt; its context is appended to that turn. */
+const SESSION = "llmmemory session-start --agent gemini";
+
 const SPECS: HookSpec[] = [
-  { event: "SessionStart", command: "llmmemory session-start --agent gemini" },
+  { event: "SessionStart", command: SESSION },
   { event: "BeforeAgent", command: "llmmemory prompt --agent gemini" },
 ];
 
@@ -18,6 +20,8 @@ export const gemini: Agent = {
   label: "Gemini CLI",
   hooksPath: CONFIG,
   mcpPath: CONFIG,
+  sessionCommand: SESSION,
+  probe: (root) => ({ session_id: "llmmemory-doctor", cwd: root, hook_event_name: "SessionStart", source: "startup" }),
   setupNote: "Gemini CLI connects project MCP servers only in trusted folders: run gemini trust in this project.",
   detect: (root) => existsSync(join(root, ".gemini")),
 

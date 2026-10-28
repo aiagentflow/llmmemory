@@ -28,6 +28,8 @@ export const cursor: Agent = {
   label: "Cursor",
   hooksPath: CONFIG,
   mcpPath: MCP,
+  sessionCommand: SESSION,
+  probe: (root) => ({ conversation_id: "llmmemory-doctor", hook_event_name: "sessionStart", workspace_roots: [root] }),
   detect: (root) => existsSync(join(root, ".cursor")),
 
   wiring(root) {

@@ -7,8 +7,10 @@ import type { Agent } from "./types.js";
 const CONFIG = join(".codex", "hooks.json");
 const MCP = join(".codex", "config.toml");
 
+const SESSION = "llmmemory session-start --agent codex";
+
 const SPECS: HookSpec[] = [
-  { event: "SessionStart", command: "llmmemory session-start --agent codex" },
+  { event: "SessionStart", command: SESSION },
   { event: "UserPromptSubmit", command: "llmmemory prompt --agent codex" },
 ];
 
@@ -19,6 +21,7 @@ export const codex: Agent = {
   label: "Codex CLI",
   hooksPath: CONFIG,
   mcpPath: MCP,
+  sessionCommand: SESSION,
   setupNote: "Codex runs project hooks only once you trust them: run /hooks in Codex and approve llmmemory's.",
   detect: (root) => existsSync(join(root, ".codex")),
 

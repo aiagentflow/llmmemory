@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
 import { add, find, forget, list, show } from "./commands/memories.js";
+import { doctor } from "./commands/doctor.js";
 import { clean, init, status } from "./commands/setup.js";
 import { AGENTS, agentNamed, claude, parseAgents } from "./agents/index.js";
 import { promptHook, sessionStart } from "./hooks.js";
@@ -21,6 +22,7 @@ Commands
   show <name>          Print one memory in full
   forget <name>        Delete a memory
   status               Show where memories live and what is wired
+  doctor               Run every wired hook and the MCP server to prove they answer
   clean                Unwire the hooks and MCP server; memories are kept
   mcp                  Run the MCP server on stdio
   session-start        Internal: session start hook, prints the memory index
@@ -51,6 +53,7 @@ const ALLOWED: Record<string, string[]> = {
   show: ["global", "project"],
   forget: ["global", "project"],
   status: [],
+  doctor: [],
   clean: [],
 };
 
@@ -173,6 +176,8 @@ async function main(argv: string[]): Promise<number> {
       return forget(root, arg, { json, scope });
     case "status":
       return status(root, { json });
+    case "doctor":
+      return doctor(root, { json });
     default:
       return clean(root, { json });
   }

@@ -29,6 +29,10 @@ export interface Agent {
   mcpPath: string;
   /** A step the user has to take before the hooks or server run, printed by init and status. */
   setupNote?: string;
+  /** The shell command the agent runs when a session starts. */
+  sessionCommand: string;
+  /** A session start payload for `doctor` to send through the hook. */
+  probe(root: string): Record<string, unknown>;
   /** Whether the project already uses this agent, so init wires it by default. */
   detect(root: string): boolean;
   /** Throws SettingsError when a config file cannot be read safely. */
