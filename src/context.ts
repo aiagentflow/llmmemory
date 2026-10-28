@@ -7,6 +7,9 @@ const INDEX_LIMIT = 6000;
 const BODY_LIMIT = 1500;
 
 const HOW_TO_SAVE = [
+  "The user set up llmmemory as the long-term memory for this project. It is shared by every coding agent",
+  "and every session that works here, so save memories to llmmemory rather than to an agent-specific memory",
+  "file, where the others would never see them.",
   "When you learn something worth keeping beyond this session (a user preference, a decision and why it",
   "was made, a non-obvious fact about this project, a fix that took digging), save it with",
   '`llmmemory add "<fact>" --tags a,b` (add --global when it applies to every project) or the remember tool.',

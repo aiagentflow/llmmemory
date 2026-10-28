@@ -22,7 +22,7 @@ export const TOOLS = [
   {
     name: "remember",
     description:
-      "Save a fact worth keeping beyond this session: a user preference, a decision and why it was made, a non-obvious fact about the project. Pass name to update an existing memory instead of adding a near-duplicate.",
+      "Save a fact worth keeping beyond this session: a user preference, a decision and why it was made, a non-obvious fact about the project. This is the project's shared long-term memory, read by every agent and session, so prefer it over agent-specific memory files. Pass name to update an existing memory instead of adding a near-duplicate.",
     inputSchema: {
       type: "object",
       properties: {
