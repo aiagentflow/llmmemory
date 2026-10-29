@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { candidates, importMemories, type Imported } from "../import.js";
 import { search } from "../search.js";
-import { displayPath, getMemory, listMemories, parse, removeMemory, saveMemory, serialize, type Memory, type Scope } from "../store.js";
+import { displayPath, getMemory, listMemories, parse, removeMemory, saveMemory, serialize, staleSince, type Memory, type Scope } from "../store.js";
 
 function out(text: string): number {
   process.stdout.write(`${text}\n`);
@@ -17,7 +17,8 @@ function fail(text: string): number {
 /** Two lines per memory, so a long summary never wraps into the next name. */
 function entry(memory: Memory, extra = ""): string {
   const tags = memory.tags.length > 0 ? `  [${memory.tags.join(", ")}]` : "";
-  return `${memory.name}  ${memory.scope}${tags}${extra}\n  ${memory.description}`;
+  const stale = staleSince(memory);
+  return `${memory.name}  ${memory.scope}${tags}${stale ? `  updated ${stale}` : ""}${extra}\n  ${memory.description}`;
 }
 
 export interface AddOptions {

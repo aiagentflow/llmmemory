@@ -8,6 +8,9 @@
   already saved. Source files are never changed.
 - `edit <name>` opens a memory in `$VISUAL` or `$EDITOR` and moves its updated
   date only when the text changed.
+- Memories not updated in about six months show their last update month in the
+  session index, `list` and `search`, and agents are told to confirm them
+  before relying on them.
 
 ## 0.1.0
 

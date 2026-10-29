@@ -207,6 +207,16 @@ export function saveMemory(root: string, input: NewMemory, now = new Date()): { 
   return { memory, updated: existing !== undefined };
 }
 
+/** Days without an update before a memory is worth checking again. */
+const STALE_DAYS = 182;
+
+/** The month a memory was last updated, when that was long enough ago to doubt it. */
+export function staleSince(memory: Pick<Memory, "updated">, now = new Date()): string | undefined {
+  const updated = Date.parse(memory.updated);
+  if (Number.isNaN(updated) || now.getTime() - updated < STALE_DAYS * 86_400_000) return undefined;
+  return memory.updated.slice(0, 7);
+}
+
 export function removeMemory(root: string, name: string, scope?: Scope): Memory | undefined {
   const memory = validName(name) ? getMemory(root, name, scope) : undefined;
   if (memory) rmSync(memory.path);
