@@ -1,9 +1,10 @@
 ---
 id: TASK-9
 title: Match common synonyms in recall
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-29 07:38'
+updated_date: '2026-10-29 07:46'
 labels:
   - recall
 dependencies: []
@@ -19,7 +20,7 @@ Fold a short built-in list of developer synonyms (deploy/ship, db/database, prod
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A query with a synonym recalls the memory
-- [ ] #2 Existing ranking tests still pass
-- [ ] #3 README Limits section and CHANGELOG updated
+- [x] #1 A query with a synonym recalls the memory
+- [x] #2 Existing ranking tests still pass
+- [x] #3 README Limits section and CHANGELOG updated
 <!-- AC:END -->
