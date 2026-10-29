@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0
 
 - `import` copies `CLAUDE.md`, `AGENTS.md`, `GEMINI.md` and Claude Code's
   auto-memory into llmmemory, one memory per section, or the files and folders
@@ -11,6 +11,7 @@
 - Memories not updated in about six months show their last update month in the
   session index, `list` and `search`, and agents are told to confirm them
   before relying on them.
+- Install with Homebrew: `brew install aiagentflow/tap/llmmemory`.
 
 ## 0.1.0
 
