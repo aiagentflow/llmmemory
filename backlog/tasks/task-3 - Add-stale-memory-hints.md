@@ -1,9 +1,10 @@
 ---
 id: TASK-3
 title: Add stale-memory hints
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-29 07:03'
+updated_date: '2026-10-29 07:11'
 labels:
   - recall
 dependencies: []
@@ -19,8 +20,8 @@ Memories not updated in about 6 months get an (updated YYYY-MM) marker in the se
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Index and list mark memories older than the threshold
-- [ ] #2 Fresh memories show no marker
-- [ ] #3 Index stays within INDEX_LIMIT
-- [ ] #4 README, CHANGELOG and tests updated
+- [x] #1 Index and list mark memories older than the threshold
+- [x] #2 Fresh memories show no marker
+- [x] #3 Index stays within INDEX_LIMIT
+- [x] #4 README, CHANGELOG and tests updated
 <!-- AC:END -->
