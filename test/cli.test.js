@@ -98,3 +98,9 @@ test("clean unwires everything and keeps the memories", () => {
   assert.deepEqual(JSON.parse(readFileSync(join(root, ".mcp.json"), "utf8")), { mcpServers: {} });
   assert.ok(existsSync(join(root, ".llmmemory", "memories", "keep-me.md")));
 });
+
+test("--version matches package.json", () => {
+  const { cli } = project();
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  assert.equal(cli(["--version"]).stdout.trim(), pkg.version);
+});
