@@ -1,3 +1,4 @@
+import { candidates, importMemories, type Imported } from "../import.js";
 import { search } from "../search.js";
 import { displayPath, getMemory, listMemories, removeMemory, saveMemory, type Memory, type Scope } from "../store.js";
 
@@ -61,4 +62,19 @@ export function forget(root: string, name: string, options: { json: boolean; sco
   if (!memory) return fail(`No memory named "${name}".`);
   if (options.json) return out(JSON.stringify({ forgot: memory.name, scope: memory.scope }));
   return out(`Forgot ${memory.scope} memory "${memory.name}".`);
+}
+
+export function importFrom(root: string, paths: string[], options: { json: boolean; scope: Scope; dryRun: boolean }): number {
+  let results: Imported[];
+  try {
+    results = importMemories(root, candidates(root, paths), options.scope, options.dryRun);
+  } catch (error) {
+    return fail((error as Error).message);
+  }
+  if (options.json) return out(JSON.stringify(results, null, 2));
+  if (results.length === 0) return out("Nothing to import: no CLAUDE.md, AGENTS.md, GEMINI.md or Claude Code memory found.");
+  const added = results.filter((r) => r.status === "imported").length;
+  const lines = results.map((r) => `${r.status === "imported" ? "+" : "="} ${r.name}  from ${displayPath(r.source)}${r.status === "exists" ? "  (already saved)" : ""}`);
+  const verb = options.dryRun ? "Would import" : "Imported";
+  return out(`${lines.join("\n")}\n${verb} ${added} ${options.scope} ${added === 1 ? "memory" : "memories"}, ${results.length - added} already saved.`);
 }

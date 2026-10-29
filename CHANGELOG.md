@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- `import` copies `CLAUDE.md`, `AGENTS.md`, `GEMINI.md` and Claude Code's
+  auto-memory into llmmemory, one memory per section, or the files and folders
+  given. `--dry-run` shows what it would save; running it again skips what is
+  already saved. Source files are never changed.
+
 ## 0.1.0
 
 First release.
