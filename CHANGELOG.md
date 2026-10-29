@@ -4,6 +4,9 @@
 
 - `add` and the `remember` tool name the existing memory a new one mostly
   repeats, and say how to update it instead. The new memory is still saved.
+- Recall folds common developer synonyms together (deploy and ship, db and
+  database, prod and production, and a few more), so "shipping" finds a
+  deploy memory.
 
 ## 0.2.0
 

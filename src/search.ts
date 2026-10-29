@@ -8,11 +8,35 @@ const STOPWORDS = new Set(
   ).split(" "),
 );
 
-/** Lowercase terms with stopwords dropped and simple plurals and endings folded. */
+/**
+ * Words developers use for the same thing, each group folded into its first
+ * word after stemming, so "shipping" finds a memory that says "deploy".
+ * Kept short: a wrong synonym recalls memories nobody asked for.
+ */
+const SYNONYMS: Record<string, string> = Object.fromEntries(
+  [
+    ["deploy", "deployment", "ship", "shipp"],
+    ["database", "db", "dbs"],
+    ["prod", "production"],
+    ["env", "environment"],
+    ["test", "spec"],
+    ["doc", "documentation"],
+    ["dep", "dependency", "dependencie"],
+    ["k8s", "kubernete"],
+    ["js", "javascript"],
+    ["ts", "typescript"],
+    ["repo", "repository", "repositorie"],
+    ["config", "configuration"],
+    ["auth", "authentication"],
+  ].flatMap(([canonical, ...others]) => others.map((word) => [word, canonical])),
+);
+
+/** Lowercase terms with stopwords dropped, simple plurals and endings folded, and synonyms merged. */
 export function terms(text: string): string[] {
   return (text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [])
     .filter((w) => w.length > 1 && !STOPWORDS.has(w))
-    .map(stem);
+    .map(stem)
+    .map((w) => SYNONYMS[w] ?? w);
 }
 
 function stem(word: string): string {
