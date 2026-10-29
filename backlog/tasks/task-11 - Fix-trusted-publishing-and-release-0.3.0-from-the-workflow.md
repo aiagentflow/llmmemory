@@ -4,6 +4,7 @@ title: Fix trusted publishing and release 0.3.0 from the workflow
 status: To Do
 assignee: []
 created_date: '2026-10-29 07:39'
+updated_date: '2026-10-29 12:24'
 labels:
   - release
 dependencies:
@@ -21,7 +22,13 @@ The v0.2.0 run failed with E404: the OIDC exchange did not go through and npm fe
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Workflow no longer writes a placeholder token
-- [ ] #2 v0.3.0 published by the workflow, or the failure reported with its log
-- [ ] #3 Homebrew formula bumped once 0.3.0 is on npm
+- [x] #1 Workflow no longer writes a placeholder token
+- [x] #2 v0.3.0 published by the workflow, or the failure reported with its log
+- [x] #3 Homebrew formula bumped once 0.3.0 is on npm
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Placeholder token removed (PR #10). v0.3.0 run 40870433098 failed with ENEEDAUTH: npmjs.com refused the OIDC exchange, so the trusted publisher entry does not match the run. 0.3.0 was published by hand; Homebrew bumped in homebrew-tap#3. Left open until a tag publishes from the workflow.
+<!-- SECTION:NOTES:END -->
