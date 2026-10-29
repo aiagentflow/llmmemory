@@ -99,14 +99,17 @@ export function callTool(root: string, name: string, args: Record<string, unknow
       if (tags !== undefined && (!Array.isArray(tags) || tags.some((t) => typeof t !== "string"))) {
         throw new ToolError("tags must be a list of strings.");
       }
-      const { memory, updated } = saveMemory(root, {
+      const { memory, updated, similar } = saveMemory(root, {
         fact: text(args.fact, "fact")!,
         description: text(args.description, "description", false),
         tags: tags as string[] | undefined,
         name: text(args.name, "name", false),
         scope: scopeOf(args.scope) ?? "project",
       });
-      return `${updated ? "Updated" : "Saved"} ${memory.scope} memory "${memory.name}".`;
+      const saved = `${updated ? "Updated" : "Saved"} ${memory.scope} memory "${memory.name}".`;
+      return similar
+        ? `${saved} It looks close to "${similar.name}" (${similar.description}). If it is the same fact, call remember with name "${similar.name}" to update that one and forget "${memory.name}".`
+        : saved;
     }
     case "recall": {
       const limit = typeof args.limit === "number" && args.limit > 0 ? Math.min(Math.floor(args.limit), 20) : 5;
