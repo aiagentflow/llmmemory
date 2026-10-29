@@ -6,6 +6,8 @@
   auto-memory into llmmemory, one memory per section, or the files and folders
   given. `--dry-run` shows what it would save; running it again skips what is
   already saved. Source files are never changed.
+- `edit <name>` opens a memory in `$VISUAL` or `$EDITOR` and moves its updated
+  date only when the text changed.
 
 ## 0.1.0
 
