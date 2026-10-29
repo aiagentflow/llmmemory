@@ -17,3 +17,6 @@ token or secret is needed after that.
    `package.json` and `src/version.ts` in one commit, and tags it.
 3. Push the commit and the tag: `git push && git push --tags`.
 4. Watch the `release` workflow in GitHub Actions.
+5. Update the Homebrew formula in `aiagentflow/homebrew-tap`
+   (`Formula/llmmemory.rb`): the tarball `url` and its `sha256`, from
+   `curl -sL <url> | sha256sum`.

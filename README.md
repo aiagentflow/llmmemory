@@ -35,6 +35,12 @@ llmmemory init
 llmmemory doctor
 ```
 
+Or with Homebrew:
+
+```bash
+brew install aiagentflow/tap/llmmemory
+```
+
 `init` creates `.llmmemory/memories/`, registers llmmemory's hooks and MCP
 server for each agent you use (merging with what is already there), and prints
 what each agent got. `doctor` runs every hook and the MCP server for real and
