@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join, relative, resolve, sep } from "node:path";
+import { similar } from "./search.js";
 
 export const STORE_DIR = ".llmmemory";
 const MEMORIES = "memories";
@@ -174,7 +175,7 @@ export function validName(name: string): boolean {
  * place, keeping its created date; without one a fresh name is derived from
  * the description, numbered if it is taken.
  */
-export function saveMemory(root: string, input: NewMemory, now = new Date()): { memory: Memory; updated: boolean } {
+export function saveMemory(root: string, input: NewMemory, now = new Date()): { memory: Memory; updated: boolean; similar?: Memory } {
   const fact = input.fact.trim();
   if (fact === "") throw new Error("A memory needs some text.");
   if (input.name !== undefined && !validName(input.name)) {
@@ -186,6 +187,8 @@ export function saveMemory(root: string, input: NewMemory, now = new Date()): { 
   const description = oneLine(input.description ?? describe(fact));
   let name = input.name;
   const existing = name ? getMemory(root, name, input.scope) : undefined;
+  // A new memory that mostly repeats an old one is still saved, but the caller is told.
+  const near = existing ? undefined : similar(listMemories(root, [input.scope]), fact);
   if (!name) {
     const base = slugify(description);
     name = base;
@@ -204,7 +207,7 @@ export function saveMemory(root: string, input: NewMemory, now = new Date()): { 
     path: join(dir, `${name}.md`),
   };
   writeFileSync(memory.path, serialize(memory), "utf8");
-  return { memory, updated: existing !== undefined };
+  return { memory, updated: existing !== undefined, similar: near };
 }
 
 /** Days without an update before a memory is worth checking again. */

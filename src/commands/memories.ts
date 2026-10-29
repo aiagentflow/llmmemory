@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { candidates, importMemories, type Imported } from "../import.js";
 import { search } from "../search.js";
+import { similarHint } from "../context.js";
 import { displayPath, getMemory, listMemories, parse, removeMemory, saveMemory, serialize, staleSince, type Memory, type Scope } from "../store.js";
 
 function out(text: string): number {
@@ -31,9 +32,10 @@ export interface AddOptions {
 
 export function add(root: string, fact: string, options: AddOptions): number {
   try {
-    const { memory, updated } = saveMemory(root, { fact, ...options });
-    if (options.json) return out(JSON.stringify({ ...memory, updated }));
-    return out(`${updated ? "Updated" : "Saved"} ${memory.scope} memory "${memory.name}"\n  ${displayPath(memory.path)}`);
+    const { memory, updated, similar } = saveMemory(root, { fact, ...options });
+    if (options.json) return out(JSON.stringify({ ...memory, updated, similar: similar?.name }));
+    const hint = similar ? `\n${similarHint(similar.name, memory.name)}` : "";
+    return out(`${updated ? "Updated" : "Saved"} ${memory.scope} memory "${memory.name}"\n  ${displayPath(memory.path)}${hint}`);
   } catch (error) {
     return fail((error as Error).message);
   }

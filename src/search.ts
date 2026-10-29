@@ -41,6 +41,26 @@ export interface Hit {
   strong: boolean;
 }
 
+/** Share of words two texts have in common before a new memory counts as a near-copy. */
+const SIMILAR = 0.5;
+
+/**
+ * The memory a new fact most nearly repeats, if any: most of the words in
+ * the two, taken together, appear in both. Catches a fact restated in other
+ * order or with a word changed, which is what agents tend to save twice.
+ */
+export function similar(memories: Memory[], fact: string): Memory | undefined {
+  const words = new Set(terms(fact));
+  let best: { memory: Memory; share: number } | undefined;
+  for (const memory of memories) {
+    const theirs = new Set(terms(`${memory.description} ${memory.body}`));
+    const shared = [...words].filter((w) => theirs.has(w)).length;
+    const share = shared / new Set([...words, ...theirs]).size;
+    if (shared >= 2 && share >= SIMILAR && share > (best?.share ?? 0)) best = { memory, share };
+  }
+  return best?.memory;
+}
+
 /**
  * Ranks memories against a query, BM25 style: a term that few memories share
  * counts for more, and repeating a term has diminishing returns. A match in

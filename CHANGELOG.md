@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- `add` and the `remember` tool name the existing memory a new one mostly
+  repeats, and say how to update it instead. The new memory is still saved.
+
 ## 0.2.0
 
 - `import` copies `CLAUDE.md`, `AGENTS.md`, `GEMINI.md` and Claude Code's

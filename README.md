@@ -88,6 +88,9 @@ you › Our staging server is heron-7 and we only deploy on Thursdays after 14:0
 agent › Saved to llmmemory: staging is heron-7, deploys Thursdays after 14:00 UTC.
 ```
 
+When a new memory mostly repeats an old one, llmmemory still saves it but names
+the old one, so the agent (or you) can update that instead of keeping two.
+
 You can save memories yourself too. `--global` ones apply in every project:
 
 ```bash

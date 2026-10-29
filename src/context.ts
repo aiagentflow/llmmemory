@@ -80,6 +80,11 @@ export function sessionContext(memories: Memory[], autoRecall = true, now = new 
   return out.join("\n");
 }
 
+/** What to say when a new memory nearly repeats an old one. */
+export function similarHint(similar: string, saved: string): string {
+  return `This looks close to "${similar}". If it is the same fact, run \`llmmemory add "<fact>" --name ${similar}\` to update that one and \`llmmemory forget ${saved}\`.`;
+}
+
 function clip(text: string): string {
   // A memory cannot close its own block and pose as text outside it.
   const body = text.replace(/<\/memory>/gi, "</ memory>");
