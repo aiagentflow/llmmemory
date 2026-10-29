@@ -1,6 +1,6 @@
 {
   "name": "llmmemory",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Long-term memory for AI coding agents. Plain Markdown memories, recalled into every session through hooks and an MCP server. Works with Claude Code, Codex CLI, Gemini CLI, Cursor and Antigravity CLI.",
   "type": "module",
   "bin": {

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0
 
 - `add` and the `remember` tool name the existing memory a new one mostly
   repeats, and say how to update it instead. The new memory is still saved.

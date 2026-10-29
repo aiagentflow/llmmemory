@@ -1,9 +1,10 @@
 ---
 id: TASK-10
 title: Update website for duplicate warnings and synonyms
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-29 07:38'
+updated_date: '2026-10-29 07:51'
 labels:
   - docs
 dependencies:
@@ -21,6 +22,6 @@ Bring aiagentflow.dev/llmmemory and /docs/llmmemory in line, including the Limit
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Landing and docs pages updated
-- [ ] #2 PR merged after the preview passes
+- [x] #1 Landing and docs pages updated
+- [x] #2 PR merged after the preview passes
 <!-- AC:END -->
