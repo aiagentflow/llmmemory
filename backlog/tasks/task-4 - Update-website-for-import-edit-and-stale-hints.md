@@ -1,9 +1,10 @@
 ---
 id: TASK-4
 title: 'Update website for import, edit and stale hints'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-29 07:03'
+updated_date: '2026-10-29 07:14'
 labels:
   - docs
 dependencies:
@@ -22,6 +23,6 @@ Bring aiagentflow.dev/llmmemory and /docs/llmmemory in line with the new command
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Landing and docs pages list import and edit
-- [ ] #2 PR opened, not merged without approval
+- [x] #1 Landing and docs pages list import and edit
+- [x] #2 PR opened, not merged without approval
 <!-- AC:END -->
