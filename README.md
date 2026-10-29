@@ -100,7 +100,9 @@ agent › No. A saved project note says staging (heron-7) deploys happen only on
 The agent was never told again. The session started with an index of every
 memory, and the message pulled in the matching one in full.
 
-**6. Keep it honest.** Memories go stale like any notes. Search them, edit or update one
+**6. Keep it honest.** Memories go stale like any notes. One not updated in
+about six months shows its last update in the index and in `list`, and agents
+are told to confirm it before relying on it. Search them, edit or update one
 by name instead of adding a near-duplicate, and forget the ones that turn out
 wrong:
 
