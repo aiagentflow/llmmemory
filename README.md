@@ -62,7 +62,18 @@ ok    Codex CLI session hook      hands over the memory index
 ok    MCP server                  answers with 5 tools
 ```
 
-**3. Work normally.** Tell your agent things worth keeping, the way you would
+**3. Bring what you already have.** Facts you keep in `CLAUDE.md`, `AGENTS.md`,
+`GEMINI.md` or Claude Code's own memory only reach one agent. `import` copies
+them into llmmemory, one memory per section, and never changes the originals:
+
+```bash
+llmmemory import --dry-run   # see what it would save
+llmmemory import             # or name files and folders: llmmemory import docs/notes.md
+```
+
+Running it again skips what is already saved.
+
+**4. Work normally.** Tell your agent things worth keeping, the way you would
 tell a new teammate. Every session is told to save them to llmmemory, so you
 rarely have to ask:
 
@@ -78,7 +89,7 @@ llmmemory add "Deploys go through scripts/ship.sh, never straight to main." --ta
 llmmemory add "Prefers short answers without preamble." --global
 ```
 
-**4. Get it back.** In a new session, days later, in any wired agent:
+**5. Get it back.** In a new session, days later, in any wired agent:
 
 ```text
 you › Can I deploy to staging right now?
@@ -89,7 +100,7 @@ agent › No. A saved project note says staging (heron-7) deploys happen only on
 The agent was never told again. The session started with an index of every
 memory, and the message pulled in the matching one in full.
 
-**5. Keep it honest.** Memories go stale like any notes. Search them, update one
+**6. Keep it honest.** Memories go stale like any notes. Search them, update one
 by name instead of adding a near-duplicate, and forget the ones that turn out
 wrong:
 
@@ -99,7 +110,7 @@ llmmemory add "Deploys now run in GitHub Actions." --name deploys-go-through-scr
 llmmemory forget staging-deploy-window
 ```
 
-**6. Share it.** Commit `.llmmemory/` and every teammate's agents start with
+**7. Share it.** Commit `.llmmemory/` and every teammate's agents start with
 what yours learned. Add it to `.gitignore` instead to keep it to yourself.
 
 ## Agents
@@ -159,12 +170,13 @@ llmmemory list                  # every memory, project then global
 llmmemory search <words>        # best match first
 llmmemory show <name>           # one memory in full
 llmmemory forget <name>         # delete a memory
+llmmemory import [paths]        # copy CLAUDE.md, AGENTS.md, GEMINI.md, Claude memory
 llmmemory clean                 # unwire every agent; memories are kept
 ```
 
 Flags: `--json` on every command. `--agents` and `--no-mcp` on init.
 `--global`, `--tags`, `--description` and `--name` on add. `--global` or
-`--project` on list, show and forget. `--limit` on search.
+`--project` on list, show and forget. `--global` and `--dry-run` on import. `--limit` on search.
 
 ## Where memories live
 

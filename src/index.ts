@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
-import { add, find, forget, list, show } from "./commands/memories.js";
+import { add, find, forget, importFrom, list, show } from "./commands/memories.js";
 import { doctor } from "./commands/doctor.js";
 import { clean, init, status } from "./commands/setup.js";
 import { AGENTS, agentNamed, claude, parseAgents } from "./agents/index.js";
@@ -21,6 +21,8 @@ Commands
   search <words>       Find memories by keyword, best match first
   show <name>          Print one memory in full
   forget <name>        Delete a memory
+  import [paths]       Copy CLAUDE.md, AGENTS.md, GEMINI.md and Claude Code's own
+                       memory into llmmemory, or the files and folders given
   status               Show where memories live and what is wired
   doctor               Run every wired hook and the MCP server to prove they answer
   clean                Unwire the hooks and MCP server; memories are kept
@@ -29,12 +31,13 @@ Commands
   prompt               Internal: per-message hook, recalls matching memories
 
 Options
-  --global             add, list, show, forget: the store shared by every project
+  --global             add, list, show, forget, import: the store shared by every project
   --project            list, show, forget: only this project's store
   --name <name>        add: update the memory with this name instead of adding one
   --description <text> add: one-line summary (default: the first sentence)
   --tags <a,b>         add: comma-separated tags
   --limit <n>          search: how many results (default 5)
+  --dry-run            import: list what would be imported, save nothing
   --agents <list>      init: agents to wire, comma-separated: claude, codex,
                        gemini, cursor, antigravity. Default: Claude Code plus
                        any agent the project already uses
@@ -52,6 +55,7 @@ const ALLOWED: Record<string, string[]> = {
   search: ["limit"],
   show: ["global", "project"],
   forget: ["global", "project"],
+  import: ["global", "dry-run"],
   status: [],
   doctor: [],
   clean: [],
@@ -79,6 +83,7 @@ async function main(argv: string[]): Promise<number> {
         description: { type: "string" },
         tags: { type: "string" },
         limit: { type: "string" },
+        "dry-run": { type: "boolean" },
         "no-mcp": { type: "boolean" },
         agents: { type: "string" },
         agent: { type: "string" },
@@ -128,7 +133,7 @@ async function main(argv: string[]): Promise<number> {
     process.stderr.write(`${command} needs ${command === "search" ? "some words" : command === "add" ? "a fact" : "a name"}.\n`);
     return 1;
   }
-  if (wanted === 0 && rest.length > 0) {
+  if (wanted === 0 && rest.length > 0 && command !== "import") {
     process.stderr.write(`${command} takes no arguments: ${rest.join(" ")}\n`);
     return 1;
   }
@@ -174,6 +179,8 @@ async function main(argv: string[]): Promise<number> {
       return show(root, arg, { json, scope });
     case "forget":
       return forget(root, arg, { json, scope });
+    case "import":
+      return importFrom(root, rest, { json, scope: scope ?? "project", dryRun: values["dry-run"] ?? false });
     case "status":
       return status(root, { json });
     case "doctor":
