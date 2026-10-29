@@ -4,6 +4,7 @@ title: 'Verify Codex, Gemini, Cursor and Antigravity on real installs'
 status: To Do
 assignee: []
 created_date: '2026-10-29 07:03'
+updated_date: '2026-10-29 07:18'
 labels:
   - multi-agent
 dependencies: []
@@ -22,3 +23,9 @@ Only Claude Code is installed here; the other four are tested with payloads buil
 - [ ] #1 Each agent confirmed or its wiring fixed
 - [ ] #2 Scratch dirs and session folders removed
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+2026-10-29: checked this machine. Only /usr/bin/antigravity is present, and it is the Antigravity IDE 1.107.0 (VS Code fork), not the Antigravity CLI. Codex, Gemini CLI and Cursor are not installed. Still blocked.
+<!-- SECTION:NOTES:END -->
