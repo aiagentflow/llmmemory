@@ -161,7 +161,8 @@ Per agent:
 | Any time | MCP tools: `remember`, `recall`, `read_memory`, `forget`, `list_memories` |
 
 Matching is keyword search with BM25-style ranking: rare words count for more,
-and a match in a memory's name or tags outweighs one in its body. A single
+and a match in a memory's name or tags outweighs one in its body. Common
+developer synonyms count as the same word, so "shipping" finds a deploy memory. A single
 common word deep in a body is not enough to recall a memory, so unrelated
 messages add nothing to the context. The index is capped in size, so a large
 memory never crowds out your conversation.
@@ -224,8 +225,10 @@ a memory.
 
 ## Limits
 
-- Recall matches words, not meaning. A message about "shipping" does not find a
-  memory that only says "deploy". Tags close most of that gap.
+- Recall matches words, not meaning. A short built-in list folds common
+  synonyms together ("ship" and "deploy", "db" and "database", "prod" and
+  "production"), but a message about "going live" still misses a memory that
+  only says "deploy". Tags close most of that gap.
 - Cursor and Antigravity CLI recall through MCP only, when the agent decides to
   call it.
 - A memory is only as good as the fact behind it. Agents are told to check

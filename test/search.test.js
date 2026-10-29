@@ -38,3 +38,14 @@ test("relevant drops lone weak matches", () => {
   assert.equal(relevant(search(memories, "deploy this")).length, 1);
   assert.ok(relevant(search(memories, "database migrations")).some((h) => h.memory.name === "database"));
 });
+
+test("common synonyms find each other", () => {
+  const memories = [
+    { name: "deploys-on-thursdays", description: "Deploys happen on Thursdays.", tags: [], body: "Deploys happen on Thursdays.", scope: "project", created: "", updated: "", path: "" },
+    { name: "db-is-postgres", description: "The db is Postgres 16.", tags: [], body: "The db is Postgres 16.", scope: "project", created: "", updated: "", path: "" },
+  ];
+  assert.equal(search(memories, "When are we shipping?")[0]?.memory.name, "deploys-on-thursdays");
+  assert.equal(search(memories, "Can I ship today")[0]?.memory.name, "deploys-on-thursdays");
+  assert.equal(search(memories, "which database do we use")[0]?.memory.name, "db-is-postgres");
+  assert.deepEqual(terms("Kubernetes configuration for production"), ["k8s", "config", "prod"]);
+});
