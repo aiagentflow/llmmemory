@@ -1,9 +1,10 @@
 ---
 id: TASK-1
 title: Add import command for existing agent memory files
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-29 07:03'
+updated_date: '2026-10-29 07:08'
 labels:
   - import
 dependencies: []
@@ -19,9 +20,9 @@ llmmemory import pulls facts people already keep elsewhere into llmmemory: CLAUD
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 --dry-run lists what would be imported without writing
-- [ ] #2 Re-running import does not create duplicates
-- [ ] #3 Claude auto-memory names and descriptions are kept
-- [ ] #4 Source files are never modified
-- [ ] #5 README, CHANGELOG and tests updated
+- [x] #1 --dry-run lists what would be imported without writing
+- [x] #2 Re-running import does not create duplicates
+- [x] #3 Claude auto-memory names and descriptions are kept
+- [x] #4 Source files are never modified
+- [x] #5 README, CHANGELOG and tests updated
 <!-- AC:END -->
