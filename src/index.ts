@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
-import { add, find, forget, importFrom, list, show } from "./commands/memories.js";
+import { add, edit, find, forget, importFrom, list, show } from "./commands/memories.js";
 import { doctor } from "./commands/doctor.js";
 import { clean, init, status } from "./commands/setup.js";
 import { AGENTS, agentNamed, claude, parseAgents } from "./agents/index.js";
@@ -20,6 +20,7 @@ Commands
   list                 List memories
   search <words>       Find memories by keyword, best match first
   show <name>          Print one memory in full
+  edit <name>          Open a memory in $VISUAL or $EDITOR
   forget <name>        Delete a memory
   import [paths]       Copy CLAUDE.md, AGENTS.md, GEMINI.md and Claude Code's own
                        memory into llmmemory, or the files and folders given
@@ -31,8 +32,8 @@ Commands
   prompt               Internal: per-message hook, recalls matching memories
 
 Options
-  --global             add, list, show, forget, import: the store shared by every project
-  --project            list, show, forget: only this project's store
+  --global             add, list, show, edit, forget, import: the store shared by every project
+  --project            list, show, edit, forget: only this project's store
   --name <name>        add: update the memory with this name instead of adding one
   --description <text> add: one-line summary (default: the first sentence)
   --tags <a,b>         add: comma-separated tags
@@ -54,6 +55,7 @@ const ALLOWED: Record<string, string[]> = {
   list: ["global", "project"],
   search: ["limit"],
   show: ["global", "project"],
+  edit: ["global", "project"],
   forget: ["global", "project"],
   import: ["global", "dry-run"],
   status: [],
@@ -62,7 +64,7 @@ const ALLOWED: Record<string, string[]> = {
 };
 
 /** How many positional arguments each command takes after its name. */
-const ARGS: Record<string, number> = { add: 1, search: 1, show: 1, forget: 1 };
+const ARGS: Record<string, number> = { add: 1, search: 1, show: 1, edit: 1, forget: 1 };
 
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = [];
@@ -177,6 +179,8 @@ async function main(argv: string[]): Promise<number> {
     }
     case "show":
       return show(root, arg, { json, scope });
+    case "edit":
+      return edit(root, arg, { json, scope });
     case "forget":
       return forget(root, arg, { json, scope });
     case "import":

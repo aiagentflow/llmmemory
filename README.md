@@ -100,12 +100,13 @@ agent › No. A saved project note says staging (heron-7) deploys happen only on
 The agent was never told again. The session started with an index of every
 memory, and the message pulled in the matching one in full.
 
-**6. Keep it honest.** Memories go stale like any notes. Search them, update one
+**6. Keep it honest.** Memories go stale like any notes. Search them, edit or update one
 by name instead of adding a near-duplicate, and forget the ones that turn out
 wrong:
 
 ```bash
 llmmemory search deploy
+llmmemory edit deploys-go-through-scripts-ship-sh
 llmmemory add "Deploys now run in GitHub Actions." --name deploys-go-through-scripts-ship-sh
 llmmemory forget staging-deploy-window
 ```
@@ -169,6 +170,7 @@ llmmemory add "<fact>"          # save a memory ("-" reads it from stdin)
 llmmemory list                  # every memory, project then global
 llmmemory search <words>        # best match first
 llmmemory show <name>           # one memory in full
+llmmemory edit <name>           # open a memory in $VISUAL or $EDITOR
 llmmemory forget <name>         # delete a memory
 llmmemory import [paths]        # copy CLAUDE.md, AGENTS.md, GEMINI.md, Claude memory
 llmmemory clean                 # unwire every agent; memories are kept
@@ -176,7 +178,7 @@ llmmemory clean                 # unwire every agent; memories are kept
 
 Flags: `--json` on every command. `--agents` and `--no-mcp` on init.
 `--global`, `--tags`, `--description` and `--name` on add. `--global` or
-`--project` on list, show and forget. `--global` and `--dry-run` on import. `--limit` on search.
+`--project` on list, show, edit and forget. `--global` and `--dry-run` on import. `--limit` on search.
 
 ## Where memories live
 

@@ -1,9 +1,10 @@
 ---
 id: TASK-2
 title: Add edit command to open a memory in EDITOR
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-29 07:03'
+updated_date: '2026-10-29 07:10'
 labels:
   - cli
 dependencies: []
@@ -19,8 +20,8 @@ llmmemory edit <name> opens the memory file in $VISUAL or $EDITOR (vi fallback) 
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Opens the right file for project and global scope
-- [ ] #2 updated date changes only when the content changed
-- [ ] #3 Clear error for an unknown name or no editor
-- [ ] #4 README, CHANGELOG and tests updated
+- [x] #1 Opens the right file for project and global scope
+- [x] #2 updated date changes only when the content changed
+- [x] #3 Clear error for an unknown name or no editor
+- [x] #4 README, CHANGELOG and tests updated
 <!-- AC:END -->
