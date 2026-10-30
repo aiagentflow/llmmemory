@@ -41,6 +41,7 @@ export const claude: Agent = {
     dirs: [str(input.cwd), process.env.CLAUDE_PROJECT_DIR, process.cwd()],
     sessionId: str(input.session_id),
     prompt: str(input.prompt),
+    source: str(input.source),
   }),
   sessionOutput: (context) => hookContext("SessionStart", context),
   promptOutput: (context) => hookContext("UserPromptSubmit", context),

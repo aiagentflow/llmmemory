@@ -5,6 +5,8 @@ export interface HookInput {
   sessionId?: string;
   /** The user's message, on the per-prompt hook. */
   prompt?: string;
+  /** Why a session started, where the agent says: startup, resume, clear or compact. */
+  source?: string;
 }
 
 export interface Wiring {

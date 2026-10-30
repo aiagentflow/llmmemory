@@ -38,6 +38,7 @@ export const gemini: Agent = {
     dirs: [str(input.cwd), process.env.GEMINI_PROJECT_DIR, process.cwd()],
     sessionId: str(input.session_id),
     prompt: str(input.prompt),
+    source: str(input.source),
   }),
   sessionOutput: (context) => hookContext("SessionStart", context),
   promptOutput: (context) => hookContext("BeforeAgent", context),
