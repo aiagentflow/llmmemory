@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Memories recalled earlier in a session can be recalled again after it is
+  compacted or cleared, since they are no longer in the context.
+
 ## 0.3.0
 
 - `add` and the `remember` tool name the existing memory a new one mostly

@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { claude, type Agent, type HookInput } from "./agents/index.js";
@@ -43,7 +43,11 @@ function emit(output: string): void {
 /** Session start hook: hands the agent the index of memories. Never fails a session. */
 export async function sessionStart(agent: Agent = claude): Promise<number> {
   try {
-    const root = rootFor(await readInput(agent));
+    const input = await readInput(agent);
+    // After a compaction or clear, recalled memories are no longer in the context, so they may be recalled again.
+    // A resumed session still has them.
+    if (input.source !== "resume") forgetSeen(input.sessionId);
+    const root = rootFor(input);
     let autoRecall = false;
     try {
       autoRecall = agent.wiring(root).prompt === true;
@@ -72,6 +76,15 @@ function readSeen(sessionId: string | undefined): Set<string> {
     return new Set(JSON.parse(readFileSync(seenFile(sessionId), "utf8")) as string[]);
   } catch {
     return new Set();
+  }
+}
+
+function forgetSeen(sessionId: string | undefined): void {
+  if (!sessionId) return;
+  try {
+    rmSync(seenFile(sessionId), { force: true });
+  } catch {
+    // Worst case a memory is not recalled again.
   }
 }
 
