@@ -66,6 +66,34 @@ test("hand-written files without frontmatter still load", () => {
   assert.deepEqual(parse("---\ntags: a, \"b\"\n---\nbody", "x").tags, ["a", "b"]);
 });
 
+test("frontmatter written by hand or by other tools reads as meant", () => {
+  const parsed = parse(
+    [
+      "---",
+      'name: "polar-billing"',
+      'description: "Billing runs on Polar: not \\"Stripe\\""',
+      "metadata:",
+      "  type: project",
+      "  description: nested, not the summary",
+      "tags:",
+      "  - billing",
+      "  - 'payments'",
+      "updated: '2026-10-01T00:00:00Z'",
+      "---",
+      "",
+      "Billing runs on Polar.",
+    ].join("\n"),
+    "polar-billing",
+  );
+  assert.equal(parsed.description, 'Billing runs on Polar: not "Stripe"');
+  assert.deepEqual(parsed.tags, ["billing", "payments"]);
+  assert.equal(parsed.updated, "2026-10-01T00:00:00Z");
+  assert.equal(parsed.body, "Billing runs on Polar.");
+  // What llmmemory writes itself still reads back the same.
+  assert.deepEqual(parse("---\ndescription: It's fine: really.\ntags: [a, b]\n---\nx", "y").tags, ["a", "b"]);
+  assert.equal(parse("---\ndescription: It's fine: really.\n---\nx", "y").description, "It's fine: really.");
+});
+
 test("project and global memories are kept apart, project first", () => {
   const { project } = sandbox();
   saveMemory(project, { fact: "Global fact.", name: "fact", scope: "global" });

@@ -110,6 +110,13 @@ export function serialize(memory: Pick<Memory, "name" | "description" | "tags" |
   return lines.join("\n");
 }
 
+/** A YAML scalar without its quotes. */
+function unquote(value: string): string {
+  if (/^".*"$/.test(value)) return value.slice(1, -1).replace(/\\(["\\])/g, "$1");
+  if (/^'.*'$/.test(value)) return value.slice(1, -1).replace(/''/g, "'");
+  return value;
+}
+
 /**
  * Reads a memory file. Files are meant to be edited by hand, so anything
  * missing falls back to something sensible instead of failing: no frontmatter
@@ -117,19 +124,30 @@ export function serialize(memory: Pick<Memory, "name" | "description" | "tags" |
  */
 export function parse(text: string, fallbackName: string): Omit<Memory, "scope" | "path"> {
   const fields: Record<string, string> = {};
+  const lists: Record<string, string[]> = {};
   let body = text;
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
   if (match) {
     body = text.slice(match[0].length);
+    let key = "";
     for (const line of match[1].split(/\r?\n/)) {
+      // "- item" under a key with no value is a block list; other indented lines belong to a nested map.
+      const item = line.match(/^\s*-\s+(.*)$/);
+      if (item && key && fields[key] === "") {
+        (lists[key] ??= []).push(unquote(item[1].trim()));
+        continue;
+      }
+      if (/^\s/.test(line)) continue;
       const at = line.indexOf(":");
-      if (at > 0) fields[line.slice(0, at).trim()] = line.slice(at + 1).trim();
+      if (at <= 0) continue;
+      key = line.slice(0, at).trim();
+      fields[key] = unquote(line.slice(at + 1).trim());
     }
   }
-  const tags = (fields.tags ?? "")
+  const tags = lists.tags ?? (fields.tags ?? "")
     .replace(/^\[|\]$/g, "")
     .split(",")
-    .map((t) => t.trim().replace(/^["']|["']$/g, ""))
+    .map((t) => unquote(t.trim()))
     .filter((t) => t.length > 0);
   body = body.trim();
   return {
