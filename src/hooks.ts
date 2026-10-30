@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { claude, type Agent, type HookInput } from "./agents/index.js";
@@ -8,6 +8,8 @@ import { findRoot, listMemories } from "./store.js";
 
 /** Memories recalled for one prompt at most. */
 const RECALL_LIMIT = 3;
+/** How long a session's record of recalled memories is kept. */
+const SEEN_DAYS = 7;
 
 async function readStdin(): Promise<string> {
   if (process.stdin.isTTY) return "";
@@ -47,6 +49,7 @@ export async function sessionStart(agent: Agent = claude): Promise<number> {
     // After a compaction or clear, recalled memories are no longer in the context, so they may be recalled again.
     // A resumed session still has them.
     if (input.source !== "resume") forgetSeen(input.sessionId);
+    pruneSeen();
     const root = rootFor(input);
     let autoRecall = false;
     try {
@@ -85,6 +88,23 @@ function forgetSeen(sessionId: string | undefined): void {
     rmSync(seenFile(sessionId), { force: true });
   } catch {
     // Worst case a memory is not recalled again.
+  }
+}
+
+/** Deletes records of sessions that ended long ago; each session leaves one behind. */
+function pruneSeen(now = Date.now()): void {
+  const dir = join(tmpdir(), "llmmemory");
+  try {
+    for (const file of readdirSync(dir)) {
+      const path = join(dir, file);
+      try {
+        if (file.endsWith(".json") && now - statSync(path).mtimeMs > SEEN_DAYS * 86_400_000) rmSync(path, { force: true });
+      } catch {
+        // Another session may have removed it first.
+      }
+    }
+  } catch {
+    // No records yet.
   }
 }
 

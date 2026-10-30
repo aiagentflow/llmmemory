@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, utimesSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
 import { run, sandbox } from "./helpers.js";
@@ -73,6 +73,21 @@ test("a compacted or cleared session recalls memories again, a resumed one does 
   assert.match(ask().stdout, /ship\.sh/);
   start("clear");
   assert.match(ask().stdout, /ship\.sh/);
+});
+
+test("session start deletes recall records older than a week", () => {
+  const { dir, project, home } = setup();
+  const records = join(dir, "llmmemory");
+  mkdirSync(records);
+  writeFileSync(join(records, "old.json"), "[]");
+  writeFileSync(join(records, "new.json"), "[]");
+  const weekAgo = new Date(Date.now() - 8 * 86_400_000);
+  utimesSync(join(records, "old.json"), weekAgo, weekAgo);
+
+  const result = run(project, home, ["session-start"], JSON.stringify({ session_id: "s", cwd: project }), { TMPDIR: dir });
+  assert.equal(result.code, 0);
+  assert.equal(existsSync(join(records, "old.json")), false);
+  assert.equal(existsSync(join(records, "new.json")), true);
 });
 
 test("a memory cannot break out of its block", () => {
