@@ -8,6 +8,8 @@
   is full the oldest are left out instead of the last alphabetically.
 - Memory files read quoted values and block-list tags, and ignore nested
   fields, so hand-written and imported files load as written.
+- The session start hook deletes recall records older than a week from the
+  temp directory.
 
 ## 0.3.0
 

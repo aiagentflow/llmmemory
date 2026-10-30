@@ -1,9 +1,10 @@
 ---
 id: TASK-15
 title: Delete old recall records from the temp directory
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-30 15:49'
+updated_date: '2026-10-30 15:53'
 labels:
   - hooks
 dependencies: []
@@ -19,7 +20,7 @@ Every session leaves a small JSON file in tmpdir/llmmemory that is never removed
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Records older than 7 days are removed at session start
-- [ ] #2 Errors never reach the session
-- [ ] #3 Tested
+- [x] #1 Records older than 7 days are removed at session start
+- [x] #2 Errors never reach the session
+- [x] #3 Tested
 <!-- AC:END -->
