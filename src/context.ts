@@ -59,8 +59,10 @@ export function sessionContext(memories: Memory[], autoRecall = true, now = new 
   if (memories.length === 0) {
     return ["llmmemory: no memories saved yet for this project.", HOW_TO_SAVE].join("\n");
   }
-  const project = memories.filter((m) => m.scope === "project");
-  const global = memories.filter((m) => m.scope === "global");
+  // Newest first, so a capped index leaves out the memories least likely to still hold.
+  const newest = (a: Memory, b: Memory) => b.updated.localeCompare(a.updated);
+  const project = memories.filter((m) => m.scope === "project").sort(newest);
+  const global = memories.filter((m) => m.scope === "global").sort(newest);
   const out = [`llmmemory: ${memories.length} saved memories. Each line is a name and a summary.`];
   let budget = INDEX_LIMIT;
   let left = 0;

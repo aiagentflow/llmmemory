@@ -165,7 +165,8 @@ and a match in a memory's name or tags outweighs one in its body. Common
 developer synonyms count as the same word, so "shipping" finds a deploy memory. A single
 common word deep in a body is not enough to recall a memory, so unrelated
 messages add nothing to the context. The index is capped in size, so a large
-memory never crowds out your conversation.
+store never crowds out your conversation; it lists the newest memories first,
+so the oldest are the ones left out.
 
 Every session is told that llmmemory is the project's shared memory, so agents
 save there rather than to an agent-specific memory file the others never see.
