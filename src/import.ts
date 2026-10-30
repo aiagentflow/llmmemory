@@ -38,7 +38,7 @@ function single(text: string, path: string): Candidate | undefined {
   const memory = parse(text, basename(path, ".md"));
   const slug = validName(unquote(name.trim())) ? unquote(name.trim()) : slugify(unquote(name.trim()));
   if (memory.body === "") return undefined;
-  return { name: slug, description: unquote(memory.description), fact: memory.body, tags: ["imported"], source: path };
+  return { name: slug, description: memory.description, fact: memory.body, tags: ["imported"], source: path };
 }
 
 /**

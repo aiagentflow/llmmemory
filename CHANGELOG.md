@@ -6,6 +6,8 @@
   compacted or cleared, since they are no longer in the context.
 - The session index lists the most recently updated memories first, so when it
   is full the oldest are left out instead of the last alphabetically.
+- Memory files read quoted values and block-list tags, and ignore nested
+  fields, so hand-written and imported files load as written.
 
 ## 0.3.0
 
