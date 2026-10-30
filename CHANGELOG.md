@@ -4,6 +4,8 @@
 
 - Memories recalled earlier in a session can be recalled again after it is
   compacted or cleared, since they are no longer in the context.
+- The session index lists the most recently updated memories first, so when it
+  is full the oldest are left out instead of the last alphabetically.
 
 ## 0.3.0
 

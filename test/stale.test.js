@@ -33,6 +33,14 @@ test("the index stays within its size cap with stale markers", () => {
   assert.ok(lines.length < 500);
 });
 
+test("the index lists the newest memories first and drops the oldest when capped", () => {
+  const many = Array.from({ length: 500 }, (_, i) => memory(`memory-${String(i).padStart(3, "0")}`, new Date(Date.UTC(2026, 0, 1) + i * 3_600_000).toISOString()));
+  const lines = sessionContext(many, true, NOW).split("\n").filter((l) => l.startsWith("- "));
+  assert.match(lines[0], /^- memory-499:/);
+  assert.match(lines[1], /^- memory-498:/);
+  assert.ok(!lines.some((l) => l.startsWith("- memory-000:")));
+});
+
 test("list shows when a stale memory was last updated", () => {
   const box = sandbox();
   mkdirSync(box.project, { recursive: true });
