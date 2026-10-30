@@ -1,9 +1,10 @@
 ---
 id: TASK-13
 title: Keep the most recently updated memories when the index is capped
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-30 15:49'
+updated_date: '2026-10-30 15:51'
 labels:
   - recall
 dependencies: []
@@ -19,7 +20,7 @@ The session index drops memories alphabetically once it reaches INDEX_LIMIT. Ord
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Index lists newest first within project and global
-- [ ] #2 A capped index keeps the newest
-- [ ] #3 Tests updated
+- [x] #1 Index lists newest first within project and global
+- [x] #2 A capped index keeps the newest
+- [x] #3 Tests updated
 <!-- AC:END -->
