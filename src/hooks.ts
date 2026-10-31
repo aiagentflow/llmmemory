@@ -125,7 +125,7 @@ function writeSeen(sessionId: string | undefined, seen: Set<string>): void {
  */
 export function relevant(hits: Hit[]): Hit[] {
   const top = hits[0]?.score ?? 0;
-  return hits.filter((hit) => (hit.strong || hit.matched >= 2) && hit.score >= top * 0.4).slice(0, RECALL_LIMIT);
+  return hits.filter((hit) => (hit.strong || hit.matched >= 2) && hit.score >= top * 0.5).slice(0, RECALL_LIMIT);
 }
 
 /** Per-prompt hook: adds the memories that match the user's message. */
