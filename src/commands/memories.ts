@@ -1,9 +1,9 @@
 import { spawnSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { candidates, importMemories, type Imported } from "../import.js";
 import { search } from "../search.js";
 import { similarHint } from "../context.js";
-import { displayPath, getMemory, listMemories, parse, removeMemory, saveMemory, serialize, staleSince, type Memory, type Scope } from "../store.js";
+import { displayPath, getMemory, listMemories, parse, removeMemory, saveMemory, serialize, staleSince, writeAtomic, type Memory, type Scope } from "../store.js";
 
 function out(text: string): number {
   process.stdout.write(`${text}\n`);
@@ -106,7 +106,7 @@ export function edit(root: string, name: string, options: { json: boolean; scope
   const changed = after !== before;
   if (changed) {
     const edited = parse(after, memory.name);
-    writeFileSync(memory.path, serialize({ ...edited, created: edited.created || memory.created, updated: now.toISOString() }), "utf8");
+    writeAtomic(memory.path, serialize({ ...edited, created: edited.created || memory.created, updated: now.toISOString() }));
   }
   if (options.json) return out(JSON.stringify({ name: memory.name, scope: memory.scope, changed }));
   return out(changed ? `Updated ${memory.scope} memory "${memory.name}".` : `No changes to "${memory.name}".`);

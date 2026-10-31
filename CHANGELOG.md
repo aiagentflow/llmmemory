@@ -4,6 +4,9 @@
 
 - `edit` works on Windows, opening Notepad unless `VISUAL` or `EDITOR` is set.
   CI now runs on macOS and Windows as well as Linux.
+- Memories, recall records and agent config files are written to a temp file
+  and renamed into place, so a hook reading while an agent saves never sees a
+  half-written file.
 
 ## 0.4.0
 

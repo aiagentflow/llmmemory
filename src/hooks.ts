@@ -1,10 +1,10 @@
-import { mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { claude, type Agent, type HookInput } from "./agents/index.js";
 import { recallContext, sessionContext } from "./context.js";
 import { search, type Hit } from "./search.js";
-import { findRoot, listMemories } from "./store.js";
+import { findRoot, listMemories, writeAtomic } from "./store.js";
 
 /** Memories recalled for one prompt at most. */
 const RECALL_LIMIT = 3;
@@ -112,7 +112,7 @@ function writeSeen(sessionId: string | undefined, seen: Set<string>): void {
   if (!sessionId) return;
   try {
     mkdirSync(join(tmpdir(), "llmmemory"), { recursive: true });
-    writeFileSync(seenFile(sessionId), JSON.stringify([...seen]), "utf8");
+    writeAtomic(seenFile(sessionId), JSON.stringify([...seen]));
   } catch {
     // Worst case a memory is recalled twice.
   }
