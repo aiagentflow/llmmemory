@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.0
 
 - Memories recalled earlier in a session can be recalled again after it is
   compacted or cleared, since they are no longer in the context.
