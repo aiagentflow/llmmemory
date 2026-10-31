@@ -1,5 +1,6 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
+import { randomBytes } from "node:crypto";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { similar } from "./search.js";
 
@@ -27,6 +28,22 @@ export interface NewMemory {
   description?: string;
   tags?: string[];
   scope: Scope;
+}
+
+/**
+ * Writes a file so that a reader sees the old text or the new, never half of
+ * one: agents and hooks read the store while others write to it. The temp
+ * file sits next to the target, so the rename stays on one filesystem.
+ */
+export function writeAtomic(path: string, text: string): void {
+  const temp = `${path}.${process.pid}.${randomBytes(4).toString("hex")}.tmp`;
+  writeFileSync(temp, text, "utf8");
+  try {
+    renameSync(temp, path);
+  } catch (error) {
+    rmSync(temp, { force: true });
+    throw error;
+  }
 }
 
 /** The global store, shared by every project. LLMMEMORY_HOME moves it, mainly for tests. */
@@ -224,7 +241,7 @@ export function saveMemory(root: string, input: NewMemory, now = new Date()): { 
     scope: input.scope,
     path: join(dir, `${name}.md`),
   };
-  writeFileSync(memory.path, serialize(memory), "utf8");
+  writeAtomic(memory.path, serialize(memory));
   return { memory, updated: existing !== undefined, similar: near };
 }
 

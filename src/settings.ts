@@ -1,5 +1,6 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { writeAtomic } from "./store.js";
 
 export const MCP_NAME = "llmmemory";
 /** How every agent starts the MCP server. */
@@ -48,7 +49,7 @@ export function load(root: string, file: string): Json {
 
 export function save(root: string, file: string, value: Json): void {
   mkdirSync(dirname(join(root, file)), { recursive: true });
-  writeFileSync(join(root, file), `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  writeAtomic(join(root, file), `${JSON.stringify(value, null, 2)}\n`);
 }
 
 function groups(config: Json, event: string): MatcherGroup[] {
@@ -159,7 +160,7 @@ export function registerTomlMcp(root: string, file: string): boolean {
   const text = (tomlLines(root, file) ?? []).join("\n");
   const sep = text === "" ? "" : text.endsWith("\n\n") ? "" : text.endsWith("\n") ? "\n" : "\n\n";
   mkdirSync(dirname(join(root, file)), { recursive: true });
-  writeFileSync(join(root, file), `${text}${sep}${TOML_BLOCK}`, "utf8");
+  writeAtomic(join(root, file), `${text}${sep}${TOML_BLOCK}`);
   return true;
 }
 
@@ -172,6 +173,6 @@ export function unregisterTomlMcp(root: string, file: string): boolean {
   let end = start + 1;
   while (end < lines.length && !lines[end].trim().startsWith("[")) end += 1;
   const kept = [...lines.slice(0, start), ...lines.slice(end)].join("\n");
-  writeFileSync(join(root, file), kept.replace(/\n{3,}/g, "\n\n").replace(/^\n+/, ""), "utf8");
+  writeAtomic(join(root, file), kept.replace(/\n{3,}/g, "\n\n").replace(/^\n+/, ""));
   return true;
 }

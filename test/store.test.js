@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdirSync, readFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import {
@@ -12,6 +13,7 @@ import {
   saveMemory,
   slugify,
   validName,
+  writeAtomic,
 } from "../dist/store.js";
 import { sandbox } from "./helpers.js";
 
@@ -116,4 +118,17 @@ test("findRoot walks up to the initialized project but not to the global store",
   mkdirSync(join(user, ".llmmemory", "memories"), { recursive: true });
   mkdirSync(join(user, "code"));
   assert.equal(findRoot(join(user, "code")), null);
+});
+
+test("writes replace the file whole and leave no temp files behind", () => {
+  const root = mkdtempSync(join(tmpdir(), "llmmemory-atomic-"));
+  const path = join(root, "note.md");
+  writeAtomic(path, "first");
+  writeAtomic(path, "second");
+  assert.equal(readFileSync(path, "utf8"), "second");
+  assert.deepEqual(readdirSync(root), ["note.md"]);
+  // A failed rename cleans up after itself: here the target is a directory.
+  mkdirSync(join(root, "dir.md"));
+  assert.throws(() => writeAtomic(join(root, "dir.md"), "x"));
+  assert.deepEqual(readdirSync(root).sort(), ["dir.md", "note.md"]);
 });
