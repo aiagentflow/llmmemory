@@ -4,7 +4,8 @@ const STOPWORDS = new Set(
   (
     "a an and are as at be but by can do does for from has have how i if in is it its me my no not of on or our " +
     "so that the their them then there these they this to was we were what when where which who why will with " +
-    "you your use used using should would could please about into just also any all"
+    "you your use used using should would could please about into just also any all " +
+    "go get got add make new thing anything else something"
   ).split(" "),
 );
 
