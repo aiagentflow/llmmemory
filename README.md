@@ -46,7 +46,9 @@ server for each agent you use (merging with what is already there), and prints
 what each agent got. `doctor` runs every hook and the MCP server for real and
 tells you which ones answered.
 
-`llmmemory` must be installed globally: the agents call it by name.
+`llmmemory` must be installed globally: the agents call it by name. It needs
+Node 22 or later and runs on macOS, Linux and Windows. On Windows, `edit`
+opens Notepad unless `VISUAL` or `EDITOR` says otherwise.
 
 ## Tutorial
 

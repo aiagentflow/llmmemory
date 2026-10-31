@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- `edit` works on Windows, opening Notepad unless `VISUAL` or `EDITOR` is set.
+  CI now runs on macOS and Windows as well as Linux.
+
 ## 0.4.0
 
 - Memories recalled earlier in a session can be recalled again after it is
