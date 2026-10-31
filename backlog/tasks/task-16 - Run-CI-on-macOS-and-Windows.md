@@ -1,9 +1,10 @@
 ---
 id: TASK-16
 title: Run CI on macOS and Windows
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-31 08:00'
+updated_date: '2026-10-31 08:04'
 labels:
   - ci
 dependencies: []
@@ -19,7 +20,7 @@ CI only runs on Ubuntu. Homebrew users are on macOS, and Windows has never been 
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 CI runs on ubuntu, macos and windows
-- [ ] #2 All three pass
-- [ ] #3 Anything not supported on Windows is documented
+- [x] #1 CI runs on ubuntu, macos and windows
+- [x] #2 All three pass
+- [x] #3 Anything not supported on Windows is documented
 <!-- AC:END -->
