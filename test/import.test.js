@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
 import { run, sandbox } from "./helpers.js";
@@ -34,7 +34,8 @@ function setup() {
   const cli = (args) => run(box.project, box.home, args, undefined, env);
   cli(["init", "--no-mcp"]);
   writeFileSync(join(box.project, "CLAUDE.md"), CLAUDE_MD);
-  const auto = join(config, "projects", box.project.replace(/[^a-zA-Z0-9]/g, "-"), "memory");
+  // Claude Code names the folder after the resolved path; on macOS the temp directory is a symlink.
+  const auto = join(config, "projects", realpathSync(box.project).replace(/[^a-zA-Z0-9]/g, "-"), "memory");
   mkdirSync(auto, { recursive: true });
   writeFileSync(join(auto, "MEMORY.md"), "- [Billing](polar-billing.md) — the index\n");
   writeFileSync(

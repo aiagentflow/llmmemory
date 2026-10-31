@@ -91,10 +91,14 @@ export function importFrom(root: string, paths: string[], options: { json: boole
 export function edit(root: string, name: string, options: { json: boolean; scope?: Scope }, now = new Date()): number {
   const memory = getMemory(root, name, options.scope);
   if (!memory) return fail(`No memory named "${name}".`);
-  const editor = process.env.VISUAL || process.env.EDITOR || "vi";
+  const windows = process.platform === "win32";
+  const editor = process.env.VISUAL || process.env.EDITOR || (windows ? "notepad" : "vi");
   const before = readFileSync(memory.path, "utf8");
-  // Through the shell, so an editor with flags such as "code --wait" works.
-  const result = spawnSync("sh", ["-c", `${editor} "$1"`, "sh", memory.path], { stdio: "inherit" });
+  // Through the shell, so an editor with flags such as "code --wait" works. On Unix the
+  // path goes in as an argument, so nothing in it is read as shell syntax.
+  const result = windows
+    ? spawnSync(`${editor} "${memory.path}"`, { stdio: "inherit", shell: true })
+    : spawnSync("sh", ["-c", `${editor} "$1"`, "sh", memory.path], { stdio: "inherit" });
   if (result.error || result.status !== 0) {
     return fail(`Could not run the editor "${editor}". Set VISUAL or EDITOR, or edit ${displayPath(memory.path)} by hand.`);
   }

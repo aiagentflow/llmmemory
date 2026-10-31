@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { chmodSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
 import { run, sandbox } from "./helpers.js";
@@ -7,27 +7,28 @@ import { run, sandbox } from "./helpers.js";
 function setup() {
   const box = sandbox();
   mkdirSync(box.project, { recursive: true });
-  // An editor that appends a line, standing in for a person typing.
-  const append = join(box.dir, "append-editor");
-  writeFileSync(append, '#!/bin/sh\necho "Also on Fridays." >> "$1"\n');
-  chmodSync(append, 0o755);
-  const cli = (args, env = {}) => run(box.project, box.home, args, undefined, { VISUAL: "", EDITOR: append, ...env });
+  // Editors as Node scripts, so the same test runs on every platform. One appends a line,
+  // standing in for a person typing; the other changes nothing.
+  writeFileSync(join(box.dir, "append.js"), 'require("fs").appendFileSync(process.argv[2], "Also on Fridays.\\n");\n');
+  writeFileSync(join(box.dir, "noop.js"), "\n");
+  const editor = (script, flags = "") => `"${process.execPath}" "${join(box.dir, script)}"${flags}`;
+  const cli = (args, env = {}) => run(box.project, box.home, args, undefined, { VISUAL: "", EDITOR: editor("append.js"), ...env });
   cli(["init", "--no-mcp"]);
   cli(["add", "Deploys run on Thursdays.", "--name", "deploys"]);
   cli(["add", "Deploys are fine any day.", "--name", "deploys", "--global"]);
-  return { ...box, cli };
+  return { ...box, cli, editor };
 }
 
 test("edit opens the memory and refreshes its updated date only when it changed", () => {
-  const { project, home, cli } = setup();
+  const { project, home, cli, editor } = setup();
   const path = join(project, ".llmmemory", "memories", "deploys.md");
   const before = JSON.parse(cli(["show", "deploys", "--json"]).stdout);
 
-  assert.match(cli(["edit", "deploys", "--json"], { EDITOR: "true" }).stdout, /"changed":false/);
+  assert.match(cli(["edit", "deploys", "--json"], { EDITOR: editor("noop.js") }).stdout, /"changed":false/);
   assert.equal(JSON.parse(cli(["show", "deploys", "--json"]).stdout).updated, before.updated);
 
   // An editor with flags runs through the shell.
-  assert.match(cli(["edit", "deploys"], { EDITOR: "true --wait" }).stdout, /No changes to "deploys"/);
+  assert.match(cli(["edit", "deploys"], { EDITOR: editor("noop.js", " --wait") }).stdout, /No changes to "deploys"/);
 
   assert.match(cli(["edit", "deploys"]).stdout, /Updated project memory "deploys"/);
   const after = JSON.parse(cli(["show", "deploys", "--json"]).stdout);

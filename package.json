@@ -44,7 +44,7 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "version": "node -e \"require('fs').writeFileSync('src/version.ts', 'export const VERSION = ' + JSON.stringify(process.env.npm_package_version) + ';\\n')\" && git add src/version.ts",
-    "test": "npm run build && node --test test/*.test.js"
+    "test": "npm run build && node --test \"test/*.test.js\""
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
