@@ -84,7 +84,7 @@ test("session start deletes recall records older than a week", () => {
   const weekAgo = new Date(Date.now() - 8 * 86_400_000);
   utimesSync(join(records, "old.json"), weekAgo, weekAgo);
 
-  const result = run(project, home, ["session-start"], JSON.stringify({ session_id: "s", cwd: project }), { TMPDIR: dir });
+  const result = run(project, home, ["session-start"], JSON.stringify({ session_id: "s", cwd: project }), { TMPDIR: dir, TEMP: dir, TMP: dir });
   assert.equal(result.code, 0);
   assert.equal(existsSync(join(records, "old.json")), false);
   assert.equal(existsSync(join(records, "new.json")), true);

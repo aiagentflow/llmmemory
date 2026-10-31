@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdirSync } from "node:fs";
+import { delimiter } from "node:path";
 import { test } from "node:test";
 import { run, sandbox } from "./helpers.js";
 
@@ -13,7 +14,7 @@ function setup() {
 test("doctor runs every wired hook and the MCP server", () => {
   const { bin, cli } = setup();
   cli(["init", "--agents", "claude,codex,gemini,cursor,antigravity"]);
-  const result = cli(["doctor", "--json"], { PATH: `${bin}:${process.env.PATH}` });
+  const result = cli(["doctor", "--json"], { PATH: `${bin}${delimiter}${process.env.PATH ?? process.env.Path}` });
   const report = JSON.parse(result.stdout);
   assert.equal(result.code, 0, result.stdout);
   assert.equal(report.ok, true);
@@ -29,9 +30,10 @@ test("doctor runs every wired hook and the MCP server", () => {
 });
 
 test("doctor fails loudly when llmmemory is not on the agent's PATH", () => {
-  const { cli } = setup();
+  const { dir, cli } = setup();
   cli(["init", "--no-mcp"]);
-  const result = cli(["doctor"], { PATH: "/usr/bin:/bin" });
+  // A PATH with nothing on it: the shell itself is found without one.
+  const result = cli(["doctor"], { PATH: dir });
   assert.equal(result.code, 1);
   assert.match(result.stdout, /FAIL  Claude Code session hook\s+llmmemory is not on the PATH/);
 });
